@@ -1,95 +1,206 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Navigation from '@/components/Navigation';
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Paper,
+  Divider,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Stack,
+  Card,
+  CardContent,
+  CardActions,
+  Grid
+} from '@mui/material';
+// import Grid from '@mui/material/Unstable_Grid2';
+import {
+  AccountCircle,
+  Email,
+  VpnKey,
+  Dashboard as DashboardIcon
+} from '@mui/icons-material';
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  return (
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      <Navigation />
+      
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+            <CircularProgress />
+          </Box>
+        ) : user ? (
+          <Grid container spacing={3}>
+            <Grid xs={12}>
+              <Paper sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
+                <Typography variant="h4" gutterBottom>
+                  Welcome to Your Dashboard
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  You are logged in as <strong>{user.email}</strong>
+                </Typography>
+                
+                <Divider sx={{ my: 2 }} />
+                
+                <Typography variant="h6" gutterBottom>
+                  Your Account Information
+                </Typography>
+                
+                <List>
+                  <ListItem>
+                    <ListItemIcon>
+                      <AccountCircle />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Name" 
+                      secondary={user.name || 'Not provided'} 
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <Email />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Email" 
+                      secondary={user.email} 
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <VpnKey />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="User ID" 
+                      secondary={user.id} 
+                    />
+                  </ListItem>
+                </List>
+              </Paper>
+            </Grid>
+            
+            <Grid xs={12} md={4}>
+              <Card>
+                <CardContent>
+                  <DashboardIcon color="primary" sx={{ fontSize: 40, mb: 2 }} />
+                  <Typography variant="h6" component="div">
+                    Dashboard
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    View your personalized dashboard with all your information.
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    component={Link}
+                    href="/dashboard"
+                  >
+                    Go to Dashboard
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+            
+            <Grid xs={12} md={4}>
+              <Card>
+                <CardContent>
+                  <AccountCircle color="primary" sx={{ fontSize: 40, mb: 2 }} />
+                  <Typography variant="h6" component="div">
+                    Profile
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Update your profile information and account settings.
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    component={Link}
+                    href="/profile"
+                  >
+                    View Profile
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+            
+            <Grid xs={12} md={4}>
+              <Card>
+                <CardContent>
+                  <VpnKey color="primary" sx={{ fontSize: 40, mb: 2 }} />
+                  <Typography variant="h6" component="div">
+                    Settings
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Manage your account settings and security preferences.
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    component={Link}
+                    href="/settings"
+                  >
+                    Go to Settings
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          </Grid>
+        ) : (
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            minHeight: '70vh'
+          }}>
+            <Typography variant="h3" component="h1" gutterBottom>
+              Welcome to My App
+            </Typography>
+            <Typography variant="h6" color="textSecondary" paragraph align="center" sx={{ maxWidth: 600, mb: 4 }}>
+              A secure authentication system with PostgreSQL integration.
+              Sign in to access your personalized dashboard.
+            </Typography>
+            
+            <Stack direction="row" spacing={2}>
+              <Button 
+                variant="contained" 
+                size="large"
+                component={Link}
+                href="/login"
+              >
+                Login
+              </Button>
+              <Button 
+                variant="outlined" 
+                size="large"
+                component={Link}
+                href="/register"
+              >
+                Register
+              </Button>
+            </Stack>
+          </Box>
+        )}
+      </Container>
+    </Box>
   );
 }
